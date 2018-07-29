@@ -21,15 +21,16 @@ public class Log_In {
 	private JTextField txtUserName;
 	private JPasswordField passwordField;
 	private Connection connection = null;
+	private Context context;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main() {
+	public static void main(Context context) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Log_In window = new Log_In();
+					Log_In window = new Log_In(context);
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -41,7 +42,8 @@ public class Log_In {
 	/**
 	 * Create the application.
 	 */
-	public Log_In() {
+	public Log_In(Context context) {
+		this.context = context;
 		initialize();
 		//init database
 		connection = Connect.Connection();
@@ -95,8 +97,8 @@ public class Log_In {
 					int result = Connect.checkUser(userQry);
 					if(result > 0) {
 						frame.dispose();
-						String[] in = {uid};
-						Find_Movies.main(in);
+						context.userId = result;
+						Find_Movies.main(context);
 					}
 						
 					String strResult = "Invalid User ID and Password Combo.\n Please try again.";

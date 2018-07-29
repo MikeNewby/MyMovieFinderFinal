@@ -17,18 +17,18 @@ import javax.swing.JPasswordField;
 public class Create_User {
 
 	private JFrame frame;
-	private JTextField txtUserName;
-	private JPasswordField passwordField;
-	private JTextField txtUserEmail;
+	private JTextField emailTextField;
+	private JPasswordField passwordTextField;
+	private Context context;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void 	main() {
+	public static void 	main(Context context) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Create_User window = new Create_User();
+					Create_User window = new Create_User(context);
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -40,7 +40,8 @@ public class Create_User {
 	/**
 	 * Create the application.
 	 */
-	public Create_User() {
+	public Create_User(Context context) {
+		this.context = context;
 		initialize();
 	}
 
@@ -49,44 +50,45 @@ public class Create_User {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 254, 271);
+		frame.setBounds(100, 100, 250, 250);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		
-		JLabel lblLogin = new JLabel("Create New User");
-		lblLogin.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblLogin.setBounds(25, 32, 186, 36);
-		frame.getContentPane().add(lblLogin);
-		
-		txtUserName = new JTextField();
-		txtUserName.setForeground(Color.LIGHT_GRAY);
-		txtUserName.setBounds(104, 71, 107, 20);
-		frame.getContentPane().add(txtUserName);
-		txtUserName.setColumns(10);
-		
-		passwordField = new JPasswordField();
-		passwordField.setBounds(104, 102, 107, 20);
-		frame.getContentPane().add(passwordField);
-		
-		JLabel lblUserName = new JLabel("User Name:");
-		lblUserName.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblUserName.setBounds(25, 69, 80, 20);
-		frame.getContentPane().add(lblUserName);
-		
-		JLabel lblPassword = new JLabel("Password:");
-		lblPassword.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblPassword.setBounds(25, 100, 69, 20);
-		frame.getContentPane().add(lblPassword);
-		
-		JButton btnCreateUser = new JButton("Create");
-		btnCreateUser.addActionListener(new ActionListener() {
+
+		JLabel title = new JLabel("My Movie Finder");
+		title.setFont(new Font("Tahoma", Font.BOLD, 16));
+		title.setBounds(25, 11, 186, 27);
+		frame.getContentPane().add(title);
+
+		JLabel emailLabel = new JLabel("Email:");
+		emailLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		emailLabel.setBounds(25, 69, 80, 20);
+		frame.getContentPane().add(emailLabel);
+
+		emailTextField = new JTextField();
+		emailTextField.setForeground(Color.LIGHT_GRAY);
+		emailTextField.setBounds(104, 71, 107, 20);
+		frame.getContentPane().add(emailTextField);
+		emailTextField.setColumns(10);
+
+		JLabel passwordLabel = new JLabel("Password:");
+		passwordLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		passwordLabel.setBounds(25, 100, 69, 20);
+		frame.getContentPane().add(passwordLabel);
+
+		passwordTextField = new JPasswordField();
+		passwordTextField.setBounds(104, 102, 107, 20);
+		frame.getContentPane().add(passwordTextField);
+
+		JButton createButton = new JButton("Create");
+		createButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String uid;
-				String pw;
 				try {
-					uid = txtUserName.getText();
-					pw = passwordField.getText();
-					
+					int userId = Query.createUser(emailTextField.getText(), passwordTextField.getText());
+					context.userId = userId;
+					AddGenre.runAddGenre(context);
+
+					//Add_Review.main(context);
+					frame.dispose();
 					
 				}catch(Exception e1) {
 					//handle bad data
@@ -94,35 +96,19 @@ public class Create_User {
 				}
 			}
 		});
-		btnCreateUser.setBounds(25, 164, 88, 41);
-		frame.getContentPane().add(btnCreateUser);
+
+		createButton.setBounds(25, 164, 88, 41);
+		frame.getContentPane().add(createButton);
 		
-		JLabel lblMyMovieFinder = new JLabel("My Movie Finder");
-		lblMyMovieFinder.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblMyMovieFinder.setBounds(25, 11, 186, 27);
-		frame.getContentPane().add(lblMyMovieFinder);
-		
-		JLabel lblEmailAddress = new JLabel("Email:");
-		lblEmailAddress.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblEmailAddress.setBounds(25, 133, 80, 20);
-		frame.getContentPane().add(lblEmailAddress);
-		
-		txtUserEmail = new JTextField();
-		txtUserEmail.setForeground(Color.LIGHT_GRAY);
-		txtUserEmail.setColumns(10);
-		txtUserEmail.setBounds(73, 135, 138, 20);
-		frame.getContentPane().add(txtUserEmail);
-		
-		JButton btnCancel = new JButton("Cancel");
-		btnCancel.addActionListener(new ActionListener() {
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				frame.dispose();
 				Main_GUI.main(null);
 			}
 		});
-		btnCancel.setBounds(123, 164, 88, 41);
-		frame.getContentPane().add(btnCancel);
-		
-		
+
+		cancelButton.setBounds(123, 164, 88, 41);
+		frame.getContentPane().add(cancelButton);
 	}
 }
