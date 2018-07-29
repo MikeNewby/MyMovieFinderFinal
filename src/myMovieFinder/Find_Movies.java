@@ -37,17 +37,15 @@ public class Find_Movies {
 	private Connection connection = null;
 	private static Statement statement = null;
     private static ResultSet resultSet = null;
-    private static int userId; //id of the logged in user. 
+    private Context context;
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		String uid = args[0];
-		userId = Integer.parseInt(uid);
+	public static void main(Context context) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Find_Movies window = new Find_Movies();
+					Find_Movies window = new Find_Movies(context);
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -59,7 +57,8 @@ public class Find_Movies {
 	/**
 	 * Create the application.
 	 */
-	public Find_Movies() {
+	public Find_Movies(Context context) {
+		this.context = context;
 		initialize();
 		//init database
 		connection = Connect.Connection();

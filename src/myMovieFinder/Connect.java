@@ -10,9 +10,9 @@ import java.sql.SQLException;
 public class Connect {
 
 	   static final String databasePrefix ="mymoviefinder"; // TODO: need to change this depending on DB location
-	   static final String netID ="user1"; // Please enter your netId
+	   static final String netID ="root"; // Please enter your netId
 	   static final String hostName ="localhost"; //washington.uww.edu
-	   static final String databaseURL ="jdbc:mysql://"+hostName+"/"+databasePrefix;
+	   static final String databaseURL ="jdbc:mysql://"+hostName+"/"+databasePrefix + "?serverTimezone=UTC";
 	   static final String password="password"; // please enter your own password
 	    
 	   private static Connection connection = null;
@@ -33,7 +33,7 @@ public class Connect {
 	        catch (SQLException e) {
 	            e.printStackTrace();
 	        }
-		return connection;
+			return connection;
 	    } // end of Connection
 	    
 	   //run simple query
@@ -64,7 +64,21 @@ public class Connect {
 	    		e.printStackTrace();
 	    	}
 	    	 
-	    } 
+	    }
+
+	    // executes an update query, returns row count of executed query
+	    public static int update(String query) {
+			try {
+				statement = connection.createStatement();
+				return statement.executeUpdate(query);
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+				return -1;
+			}
+		}
+
+
 	    //check user ID and p/w against users database.
 	    public static int checkUser(String sqlQuery) {
 	    
@@ -79,9 +93,9 @@ public class Connect {
 	    		
 	    		if(cnt == 1) {
 	    			resultSet.first();
-	    			int uid = resultSet.getInt(1);
-	    			if(uid > 0)
-	    				return uid;
+					int uid = resultSet.getInt(1);
+					if(uid > 0)
+						return uid;
 	    		}
 	    		//All other cases are a failure, 
 	    		return -1;
