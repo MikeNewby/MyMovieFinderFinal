@@ -9,11 +9,11 @@ import java.sql.SQLException;
 
 public class Connect {
 
-	   static final String databasePrefix ="mymoviefinder"; // TODO: need to change this depending on DB location
-	   static final String netID ="user1"; // Please enter your netId
+	   static final String databasePrefix ="project"; // TODO: need to change this depending on DB location
+	   static final String netID ="root"; // Please enter your netId
 	   static final String hostName ="localhost"; //washington.uww.edu
-	   static final String databaseURL ="jdbc:mysql://"+hostName+"/"+databasePrefix;
-	   static final String password="password"; // please enter your own password
+	   static final String databaseURL ="jdbc:mysql://"+hostName+"/"+databasePrefix+"?useSSL=false&serverTimezone=UTC";
+	   static final String password="Qzc10667!"; // please enter your own password
 	    
 	   private static Connection connection = null;
        private static Statement statement = null;
@@ -23,7 +23,7 @@ public class Connect {
 	  
 	      try {
 	            Class.forName("com.mysql.cj.jdbc.Driver");
-	            System.out.println("databaseURL"+ databaseURL);
+	            System.out.println("databaseURL: "+ databaseURL);
 	            connection = DriverManager.getConnection(databaseURL, netID, password);
 	            System.out.println("Successfully connected to the database");
 	         }

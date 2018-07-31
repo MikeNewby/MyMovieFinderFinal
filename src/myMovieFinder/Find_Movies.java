@@ -271,7 +271,7 @@ public class Find_Movies {
 		//pw = passwordField.getText();
 		//TODO Update Query for user ID
 		
-		qry = "SELECT id,title,year,rtAllCriticsRating,rtTopCriticsRating,rtAudienceRating from movies";
+		qry = "SELECT movieID,title,year,rtAllCriticsRating,rtTopCriticsRating,rtAudienceRating from movies";
 		
 		return qry;
 	}
