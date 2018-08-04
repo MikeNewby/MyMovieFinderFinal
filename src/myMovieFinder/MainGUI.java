@@ -9,18 +9,20 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 
-public class Main_GUI {
-
+public class MainGUI {
 	private JFrame frame;
+	private Context context;
 
 	/**
-	 * Launch the application.
+	 * This is the main entrance of the program (application). One program
+	 * only has one entrance, and here is the entrance.
 	 */
 	public static void main(String[] args) {
+		Context context = new Context();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Main_GUI window = new Main_GUI();
+					MainGUI window = new MainGUI(context);
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -32,7 +34,8 @@ public class Main_GUI {
 	/**
 	 * Create the application.
 	 */
-	public Main_GUI() {
+	public MainGUI(Context context) {
+		this.context = context;
 		initialize();
 	}
 
@@ -48,9 +51,8 @@ public class Main_GUI {
 		JButton btnLogIn = new JButton("Log In");
 		btnLogIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Log_In login = new Log_In();
 				frame.dispose();
-				login.main();
+				LogIn.run(context);
 			}
 		});
 		btnLogIn.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -60,9 +62,8 @@ public class Main_GUI {
 		JButton btnCreateUser = new JButton("Create User");
 		btnCreateUser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Create_User createUser = new Create_User();
 				frame.dispose();
-				createUser.main();
+				CreateUser.run(context);
 			}
 		});
 		btnCreateUser.setFont(new Font("Tahoma", Font.PLAIN, 16));

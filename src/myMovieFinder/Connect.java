@@ -8,7 +8,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 public class Connect {
-
 	   static final String databasePrefix ="project"; // TODO: need to change this depending on DB location
 	   static final String netID ="root"; // Please enter your netId
 	   static final String hostName ="localhost"; //washington.uww.edu
@@ -19,11 +18,11 @@ public class Connect {
        private static Statement statement = null;
        private static ResultSet resultSet = null;
        
-	   public static Connection Connection(){
-	  
+	   public static Connection getConnection(){
 	      try {
 	            Class.forName("com.mysql.cj.jdbc.Driver");
 	            System.out.println("databaseURL: "+ databaseURL);
+	            // Set the connection in this class.
 	            connection = DriverManager.getConnection(databaseURL, netID, password);
 	            System.out.println("Successfully connected to the database");
 	         }
@@ -33,68 +32,71 @@ public class Connect {
 	        catch (SQLException e) {
 	            e.printStackTrace();
 	        }
-		return connection;
-	    } // end of Connection
+			return connection;
+	    } // end of getConnection
 	    
 	   //run simple query
-	    public static void runQuery(String sqlQuery) {
-	    
-	    	try {
-	    		statement = connection.createStatement();
-	    		resultSet = statement.executeQuery(sqlQuery);
+	   public static void runQuery(String sqlQuery) {  
+		  try {
+	    			statement = connection.createStatement();
+	    			resultSet = statement.executeQuery(sqlQuery);
 
-	    		ResultSetMetaData metaData = resultSet.getMetaData();
-	    		int columns = metaData.getColumnCount();
+	    			ResultSetMetaData metaData = resultSet.getMetaData();
+	    			int columns = metaData.getColumnCount();
 
-	    		for (int i=1; i<= columns; i++) {
-	    			System.out.print(metaData.getColumnName(i)+"\t");
-	    		}
-
-	    		System.out.println();
-
-	    		while (resultSet.next()) {
-	       
 	    			for (int i=1; i<= columns; i++) {
-	    				System.out.print(resultSet.getObject(i)+"\t\t");
+	    				System.out.print(metaData.getColumnName(i)+"\t");
 	    			}
 	    			System.out.println();
-	    		}
-	    	}
-	    	catch (SQLException e) {
-	    		e.printStackTrace();
-	    	}
-	    	 
-	    } 
+	    			while (resultSet.next()) {
+	    				for (int i=1; i<= columns; i++) {
+	    					System.out.print(resultSet.getObject(i)+"\t\t");
+	    				}
+	    				System.out.println();
+	    			}
+	    		} catch (SQLException e) {
+	    			e.printStackTrace();
+	    		}	 
+	    }
+
+	    // executes an update query, returns row count of executed query
+	    public static int update(String query) {
+			try {
+				statement = connection.createStatement();
+				return statement.executeUpdate(query);
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+				return -1;
+			}
+		}
+
 	    //check user ID and p/w against users database.
 	    public static int checkUser(String sqlQuery) {
-	    
-	    	try {
-	    		statement = connection.createStatement();
-	    		resultSet = statement.executeQuery(sqlQuery);
-	    		
-	    		int cnt=0;
-	    		while(resultSet.next()) {
-	    			cnt++;
+	    		System.out.println("Check user");
+	    		if (connection == null) {
+	    			System.out.println("connection is null!!!");
 	    		}
+	    		try {
+	    			statement = connection.createStatement();
+	    			resultSet = statement.executeQuery(sqlQuery);
+	    			int cnt=0;
+	    			while(resultSet.next()) {
+	    				cnt++;
+	    			}
 	    		
-	    		if(cnt == 1) {
-	    			resultSet.first();
-	    			int uid = resultSet.getInt(1);
-	    			if(uid > 0)
-	    				return uid;
-	    		}
-	    		//All other cases are a failure, 
-	    		return -1;
-	    		
-	    		
-	    	}
-	    	catch (SQLException e) {
-	    		e.printStackTrace();
-	    		return -1;
-	    	}
-	    	
-	    	 
+	    			if(cnt == 1) {
+	    				resultSet.first();
+					int uid = resultSet.getInt(1);
+					if(uid > 0) {
+						return uid;
+					}
+	    			}
+	    			//All other cases are a failure, 
+	    			return -1;	
+	    		} catch (SQLException e) {
+	    			e.printStackTrace();
+	    			return -1;
+	    		} 
 	    } 
-	    
-	
 }

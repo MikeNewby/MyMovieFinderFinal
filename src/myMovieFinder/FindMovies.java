@@ -8,24 +8,22 @@ import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import java.awt.Font;
 import java.sql.*;
-
 import javax.swing.JButton;
 import javax.swing.JTextField;
-
 import net.proteanit.sql.DbUtils;
-
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JSlider;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
-public class Find_Movies {
-
+public class FindMovies {
 	private JFrame frame;
 	private JTable table;
 	private JTextField textTitle;
@@ -33,21 +31,20 @@ public class Find_Movies {
 	private JTextField textField_2;
 	private JTextField genre;
 	private JTextField actor;
+	private int val1;
+	private int val2;
+	private int val3;
 	
 	private Connection connection = null;
 	private static Statement statement = null;
     private static ResultSet resultSet = null;
-    private static int userId; //id of the logged in user. 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		String uid = args[0];
-		userId = Integer.parseInt(uid);
+    private Context context;
+ 
+	public void run(Context context) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Find_Movies window = new Find_Movies();
+					FindMovies window = new FindMovies(context);
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -59,10 +56,11 @@ public class Find_Movies {
 	/**
 	 * Create the application.
 	 */
-	public Find_Movies() {
+	public FindMovies(Context context) {
+		this.context = context;
 		initialize();
-		//init database
-		connection = Connect.Connection();
+		// Initialize database
+		connection = Connect.getConnection();	
 	}
 
 	/**
@@ -73,43 +71,52 @@ public class Find_Movies {
 		frame.setBounds(100, 100, 958, 613);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		
-		//Review Panel
+
+		// Review Panel
 		JPanel reviewPanel = new JPanel();
-		reviewPanel.setBounds(10, 397, 192, 150);
+		reviewPanel.setBounds(10, 397, 192, 170);
 		reviewPanel.setLayout(null);
-//frame.getContentPane().add(reviewPanel);  //hide initially. uncomment for testing. TODO	
+		// frame.getContentPane().add(reviewPanel);  //hide initially. uncomment for testing. TODO	
 		
 		JLabel lblMovieName = new JLabel("");
 		lblMovieName.setHorizontalAlignment(SwingConstants.CENTER);
 		lblMovieName.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblMovieName.setBounds(0, 26, 192, 25);
-		reviewPanel.add(lblMovieName);
+		reviewPanel.add(lblMovieName);		
 		
 		JLabel lblReview = new JLabel("Review this movie!");
 		lblReview.setHorizontalAlignment(SwingConstants.CENTER);
 		lblReview.setBounds(0, 0, 192, 25);
 		lblReview.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		reviewPanel.add(lblReview);
+
+		JButton btnGetRec = new JButton("Recommendations");
+		btnGetRec.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MovieRecommendation.run(context);
+			}
+		});
+		btnGetRec.setBounds(31, 50, 127, 40);
+		reviewPanel.add(btnGetRec);
 		
 		JButton btnNewReview = new JButton("New Review");
 		btnNewReview.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Add_Review.main(null);
+				AddReview.run(null);
 			}
 		});
-		btnNewReview.setBounds(31, 60, 127, 40);
+		btnNewReview.setBounds(31, 90, 127, 40);
 		reviewPanel.add(btnNewReview);
 		
 		JButton btnReadReviews = new JButton("Read Reviews");
 		btnReadReviews.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Read_Review.main(null);
+				ReadReview.run(null);
 			}
 		});
-		btnReadReviews.setBounds(31, 104, 127, 40);
+		btnReadReviews.setBounds(31, 130, 127, 40);
 		reviewPanel.add(btnReadReviews);
-		
+
 		//main 
 		JLabel lblFindMovies = new JLabel("Find Movies!");
 		lblFindMovies.setFont(new Font("Tahoma", Font.PLAIN, 20));
@@ -130,12 +137,11 @@ public class Find_Movies {
 				frame.revalidate();
 				//reviewPanel.add(lblReview);
 				int rowIndex = table.getSelectedRow();
-				int movieId = (int) table.getValueAt(rowIndex, 0);
+				long movieId = (long) table.getValueAt(rowIndex, 0);
 				String movieName = (String) table.getValueAt(rowIndex, 1);
 				movieName = movieId + " - " + movieName;
-				lblMovieName.setText(movieName);
-				      
-				};
+				lblMovieName.setText(movieName);      
+			};
 		});
 		
 		JButton btnExit = new JButton("Exit");
@@ -200,11 +206,17 @@ public class Find_Movies {
 		JButton btnSearch = new JButton("Search");
 		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String qry = buildQueryString();
-				
+				String title = textTitle.getText();
+				String director = textDirector.getText();
+				String Field_2 = textField_2.getText();
+			    int year = Integer.parseInt("0"+Field_2);		
+				String genre2 = genre.getText();
+				String actor2 = actor.getText();
+
+				String qry = buildQueryString(title, director, year, genre2, actor2, val1, val2, val3);
 				try {
 					statement = connection.createStatement();
-		    		resultSet = statement.executeQuery(qry);
+		    			resultSet = statement.executeQuery(qry);
 					table.setModel(DbUtils.resultSetToTableModel(resultSet));
 					
 				}catch(Exception e1) {
@@ -238,41 +250,69 @@ public class Find_Movies {
 		lblAudience.setBounds(10, 304, 57, 20);
 		frame.getContentPane().add(lblAudience);
 		
+		
 		JSlider slider = new JSlider();
 		slider.setMaximum(10);
 		slider.setBounds(74, 236, 98, 26);
 		frame.getContentPane().add(slider);
+		slider.addChangeListener(new ChangeListener() {
+		      public void stateChanged(ChangeEvent event) {
+		    	  	JSlider slider = (JSlider) event.getSource();
+		         if (!slider.getValueIsAdjusting()) {
+		        		int value = slider.getValue();
+		        		val1 = value;
+		         }    
+		      }
+		    });
+		
 		
 		JSlider slider_1 = new JSlider();
 		slider_1.setMaximum(10);
 		slider_1.setBounds(74, 267, 98, 26);
 		frame.getContentPane().add(slider_1);
+		slider_1.addChangeListener(new ChangeListener() {
+		      public void stateChanged(ChangeEvent event) {
+		    	  	JSlider slider = (JSlider) event.getSource();
+		         if (!slider.getValueIsAdjusting()) {
+		        		int value = slider.getValue();
+		        		val2 = value;		         
+		        	}    
+		      }
+		    });
 		
 		JSlider slider_2 = new JSlider();
-		slider_2.setMaximum(10);
+		slider_2.setMaximum(5);
 		slider_2.setBounds(74, 301, 98, 26);
 		frame.getContentPane().add(slider_2);
+		slider_2.addChangeListener(new ChangeListener() {
+		      public void stateChanged(ChangeEvent event) {
+		    	  	JSlider slider = (JSlider) event.getSource();
+		         if (!slider.getValueIsAdjusting()) {
+		        		int value = slider.getValue();
+		        		val3 = value;		         
+		        	}    
+		      }
+		    });
 		
 		JPanel THISONE = new JPanel();
-		THISONE.setBounds(147, 8, 45, 31);
-		
-		
-
-		
-
+		THISONE.setBounds(147, 8, 45, 31);	
 		
 	}
 
-	protected String buildQueryString() {
+	protected String buildQueryString(String title, String director, int year, String genre2, String actor2, int val1, int val2, int val3) {
 		//build query string systematically using all possible input data. 
-		String qry = "";
-		
+		String qry = "";	
 		// getText();
 		//pw = passwordField.getText();
 		//TODO Update Query for user ID
-		
-		qry = "SELECT movieID,title,year,rtAllCriticsRating,rtTopCriticsRating,rtAudienceRating from movies";
-		
+		qry = "SELECT movieID,title,year,rtAllCriticsRating,rtTopCriticsRating,rtAudienceRating from movies"
+				+ " WHERE title LIKE '%" + title + "%'" + " and movieID IN (select d.movieID from movie_directors d where d.directorName LIKE '%" + director + "%'"
+		+ " and year >= " + String.valueOf(year) 
+		+ " and movieID IN (select g.movieID from movie_genres g where g.genre LIKE '%" + genre2 + "%')" 
+		+ " and movieID IN (select a.movieID from movie_actors a where a.actorName LIKE '%"+ actor2 + "%') "
+				+ "and rtAllCriticsRating >= " + val1 + " and rtTopCriticsRating >= " + val2 + " and rtAudienceRating>= " + val3 +  ")";
+
+		System.out.println("Query: " + qry);
 		return qry;
 	}
 }

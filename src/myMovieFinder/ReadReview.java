@@ -1,30 +1,29 @@
 package myMovieFinder;
 
 import java.awt.EventQueue;
-import java.awt.Image;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import java.awt.Font;
-import javax.swing.JTextField;
 import javax.swing.JTextArea;
-import javax.swing.JSlider;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import java.awt.Font;
 
-public class Add_Review {
+public class ReadReview {
 
 	private JFrame frame;
+	private JTable table;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	public static void run(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Add_Review window = new Add_Review();
+					ReadReview window = new ReadReview();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -36,7 +35,7 @@ public class Add_Review {
 	/**
 	 * Create the application.
 	 */
-	public Add_Review() {
+	public ReadReview() {
 		initialize();
 	}
 
@@ -45,14 +44,9 @@ public class Add_Review {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 618, 371);
+		frame.setBounds(100, 100, 908, 616);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		
-		JLabel lblAddReviewFor = new JLabel("Add Review for ");
-		lblAddReviewFor.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblAddReviewFor.setBounds(22, 22, 280, 36);
-		frame.getContentPane().add(lblAddReviewFor);
 		
 		//show image from rotten tomatoes
 		URL imgPath=null;   
@@ -65,27 +59,31 @@ public class Add_Review {
 		ImageIcon img = new ImageIcon(imgPath);
 		JLabel lblMovieImage = new JLabel("");
 		lblMovieImage.setIcon(img);
-		lblMovieImage.setBounds(22, 56, 180, 256);
+		lblMovieImage.setBounds(29, 11, 180, 256);
 		frame.getContentPane().add(lblMovieImage);
 		
-		
 		JTextArea textArea = new JTextArea();
-		textArea.setBounds(225, 103, 339, 212);
+		textArea.setBounds(274, 42, 426, 405);
 		frame.getContentPane().add(textArea);
 		
-		JLabel lblRating = new JLabel("Rating (1-10)");
+		JLabel lblReviewOfBy = new JLabel("Review of          by");
+		lblReviewOfBy.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblReviewOfBy.setBounds(274, 11, 180, 32);
+		frame.getContentPane().add(lblReviewOfBy);
+		
+		table = new JTable();
+		table.setBounds(29, 299, 208, 148);
+		frame.getContentPane().add(table);
+		
+		JLabel lblSelectAReview = new JLabel("Select a Review");
+		lblSelectAReview.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblSelectAReview.setBounds(29, 272, 149, 32);
+		frame.getContentPane().add(lblSelectAReview);
+		
+		JLabel lblRating = new JLabel("Rating: ");
 		lblRating.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblRating.setBounds(225, 47, 104, 26);
+		lblRating.setBounds(584, 11, 73, 32);
 		frame.getContentPane().add(lblRating);
 		
-		JSlider slider = new JSlider();
-		slider.setBounds(339, 47, 200, 26);
-		frame.getContentPane().add(slider);
-		
-		JLabel lblComments = new JLabel("Comments");
-		lblComments.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblComments.setBounds(225, 81, 104, 17);
-		frame.getContentPane().add(lblComments);
 	}
-
 }

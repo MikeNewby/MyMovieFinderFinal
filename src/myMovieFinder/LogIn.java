@@ -1,35 +1,28 @@
 package myMovieFinder;
 
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 import javax.swing.JPasswordField;
 
-public class Log_In {
-
+public class LogIn {
 	private JFrame frame;
 	private JTextField txtUserName;
 	private JPasswordField passwordField;
-	private Connection connection = null;
+	private Context context;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main() {
+	public static void run(Context context) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Log_In window = new Log_In();
+					LogIn window = new LogIn(context);
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -38,13 +31,11 @@ public class Log_In {
 		});
 	}
 
-	/**
-	 * Create the application.
-	 */
-	public Log_In() {
+	public LogIn(Context context) {
+		this.context = context;
 		initialize();
-		//init database
-		connection = Connect.Connection();
+		// Make sure Connect has a valid database connection.
+		Connect.getConnection();
 	}
 
 	/**
@@ -88,22 +79,22 @@ public class Log_In {
 				String pw;
 				try {
 					uid = txtUserName.getText();
-					pw = passwordField.getText();
-					//TODO Update Query for user ID
-					String userQry = "SELECT * from users WHERE uid=" + uid + 
-							" and password=" + pw;
+					pw = new String(passwordField.getPassword());
+					System.out.println("uid: " + uid + ", password: " + pw);
+					// TODO: Update Query for user ID
+					String userQry = "SELECT * from users WHERE uid=" + uid + " and password=" + pw;
 					int result = Connect.checkUser(userQry);
 					if(result > 0) {
+						System.out.println("User " + uid + " found!");
 						frame.dispose();
-						String[] in = {uid};
-						Find_Movies.main(in);
+						context.userId = result;
+						FindMovies findMovies = new FindMovies(context);
+						findMovies.run(context);
 					}
-						
 					String strResult = "Invalid User ID and Password Combo.\n Please try again.";
 					lblLogin.setText(strResult);
-					
 				}catch(Exception e1) {
-					//handle bad data
+					// handle bad data
 					JOptionPane.showMessageDialog(null, e1);
 				}
 			}
@@ -115,12 +106,10 @@ public class Log_In {
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				frame.dispose();
-				Main_GUI.main(null);
+				MainGUI.main(null);
 			}
 		});
 		btnCancel.setBounds(121, 131, 90, 41);
 		frame.getContentPane().add(btnCancel);
-		
-		
 	}
 }
