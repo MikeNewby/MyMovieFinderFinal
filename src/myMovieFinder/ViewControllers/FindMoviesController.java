@@ -124,9 +124,7 @@ public class FindMoviesController implements ActionListener, MouseListener, Chan
     protected String buildQueryString(String title, String director, int year, String genre2, String actor2, int val1, int val2, int val3) {
         //build query string systematically using all possible input data.
         String qry = "";
-        // getText();
-        //pw = passwordField.getText();
-        //TODO Update Query for user ID
+
         qry = "SELECT movieID,title,year,rtAllCriticsRating,rtTopCriticsRating,rtAudienceRating from movies"
                 + " WHERE title LIKE '%" + title + "%'" + " and movieID IN (select d.movieID from movie_directors d where d.directorName LIKE '%" + director + "%'"
                 + " and year >= " + String.valueOf(year)
