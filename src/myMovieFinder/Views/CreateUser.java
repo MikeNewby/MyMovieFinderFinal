@@ -1,25 +1,38 @@
-package myMovieFinder;
+package myMovieFinder.Views;
+
+import myMovieFinder.Context;
+import myMovieFinder.ViewControllers.CreateUserController;
 
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.Color;
 import javax.swing.JPasswordField;
 
 public class CreateUser {
-
 	private JFrame frame;
 	private JTextField emailTextField;
 	private JPasswordField passwordTextField;
 	private Context context;
+
+	public JFrame getFrame() {
+		return frame;
+	}
+
+
+	public JTextField getEmailTextField() {
+		return emailTextField;
+	}
+
+
+	public JPasswordField getPasswordTextField() {
+		return passwordTextField;
+	}
 
 	/**
 	 * Launch the application.
@@ -49,6 +62,8 @@ public class CreateUser {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		CreateUserController controller = new CreateUserController(this.context, this);
+
 		frame = new JFrame();
 		frame.setBounds(100, 100, 250, 250);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -80,33 +95,13 @@ public class CreateUser {
 		frame.getContentPane().add(passwordTextField);
 
 		JButton createButton = new JButton("Create");
-		createButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					int userId = Query.createUser(
-							emailTextField.getText(), 
-							new String(passwordTextField.getPassword()));
-					context.userId = userId;
-					AddGenre.runAddGenre(context);
-					//Add_Review.main(context);
-					frame.dispose();				
-				}catch(Exception e1) {
-					//handle bad data
-					JOptionPane.showMessageDialog(null, e1);
-				}
-			}
-		});
+		createButton.addActionListener(controller);
 
 		createButton.setBounds(25, 164, 88, 41);
 		frame.getContentPane().add(createButton);
 		
 		JButton cancelButton = new JButton("Cancel");
-		cancelButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				frame.dispose();
-				MainGUI.main(null);
-			}
-		});
+		cancelButton.addActionListener(controller);
 
 		cancelButton.setBounds(123, 164, 88, 41);
 		frame.getContentPane().add(cancelButton);

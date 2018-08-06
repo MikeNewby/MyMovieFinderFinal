@@ -1,6 +1,15 @@
 package myMovieFinder;
+import myMovieFinder.Models.Movie;
+import myMovieFinder.Models.Review;
+
+import javax.swing.*;
+
+import java.sql.Statement;
+import java.sql.ResultSet;
+import java.sql.Connection;
 import java.util.Random;
 import java.util.Date;
+import java.util.List;
 
 public class Query {
     public static int createUser(String email, String password) {
@@ -25,12 +34,12 @@ public class Query {
     }
 
 
-    public static void rateMovie(int userId, String rtId, int rating) {
+    public static void rateMovie(int userId, int movieId, int rating) {
         Date date = new Date();
 
         String query = "INSERT INTO RatedBy (userId, rtID, date, rating) VALUES ("
                 + userId + ", "
-                + "'" + rtId + "'" + ", "
+                + movieId + ", "
                 + "'" + date.toString() + "'" + ", "
                 + rating
                 + ");";
@@ -73,14 +82,51 @@ public class Query {
 
     public static void likeGenre(int userId, String genreName) {
         System.out.println(userId + " likes " + genreName);
+
+        String qry = "Insert Into likedGenre (userID, genre) values (" +
+                userId + ", '" + genreName + "')";
+        try {
+            Connect.update(qry);
+        } catch(Exception e1) {
+            //handle bad data
+            JOptionPane.showMessageDialog(null, e1);
+        }
     }
 
     public static Movie getSuggestedMovie(int userId) {
         //TODO: add query
-        Movie movie = new Movie("1234");
-        movie.setTitle("Toy Story");
-        movie.setImgUrl("http://content7.flixster.com/movie/10/93/63/10936393_det.jpg");
+        Random rand = new Random();
+        Movie movie = getMovieById(rand.nextInt(1000));
 
         return movie;
+    }
+
+    public static Movie getMovieById(int movieId) {
+        String qry = "Select title, rtPictureURL from movies where movieId = " + movieId;
+        Movie movie = new Movie(movieId);
+
+        Connection connection = Connect.getConnection();
+
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(qry);
+
+            while (resultSet.next()) {
+                movie.setTitle(resultSet.getObject(1).toString());
+                String url = resultSet.getObject(2).toString();
+                movie.setImgUrl(url);
+            }
+        } catch(Exception e1) {
+            //handle bad data
+            JOptionPane.showMessageDialog(null, e1);
+        }
+
+        return movie;
+    }
+
+    public static List<Review> getReviewsByMovieId(int movieId) {
+        String qry = "Select title, rtPictureURL from movies where movieId = " + movieId;
+
+        return null;
     }
 }

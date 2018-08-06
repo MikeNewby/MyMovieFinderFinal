@@ -1,4 +1,7 @@
-package myMovieFinder;
+package myMovieFinder.Views;
+
+import myMovieFinder.Context;
+import myMovieFinder.ViewControllers.AddGenreController;
 
 import javax.swing.*;
 import java.awt.*;

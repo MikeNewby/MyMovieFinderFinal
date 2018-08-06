@@ -1,4 +1,7 @@
-package myMovieFinder;
+package myMovieFinder.Views;
+
+import myMovieFinder.Context;
+import myMovieFinder.ViewControllers.AddReviewController;
 
 import java.awt.EventQueue;
 import java.net.MalformedURLException;
@@ -46,17 +49,23 @@ public class AddReview {
 
 		JLabel title = new JLabel(context.movie.getTitle(), SwingConstants.CENTER);
 		title.setFont(new Font("Tahoma", Font.PLAIN, 22));
-		title.setBounds((width - 200) / 2, 30, 200, 36);
+		title.setBounds((width - 400) / 2, 30, 400, 36);
 		frame.getContentPane().add(title);
 
 		//show image from rotten tomatoes
 		URL imgPath = null;
 		try {
+			String url = context.movie.getImgUrl();
 			imgPath = new URL(context.movie.getImgUrl());
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			try {
+				imgPath = new URL("http://content7.flixster.com/movie/10/93/63/10936393_det.jpg");
+			} catch (MalformedURLException e2) {
+				e.printStackTrace();
+			}
 		}
+
 		ImageIcon img = new ImageIcon(imgPath);
 		JLabel lblMovieImage = new JLabel("");
 		lblMovieImage.setIcon(img);

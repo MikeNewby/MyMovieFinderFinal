@@ -1,7 +1,7 @@
-package myMovieFinder;
+package myMovieFinder.Models;
 
 public class Movie {
-	private String rtId;
+	private int movieId;
     private String imgUrl;
     private String title;
 
@@ -13,12 +13,12 @@ public class Movie {
         this.imgUrl = imgUrl;
     }
 
-    public Movie (String rtId) {
-        this.rtId = rtId;
+    public Movie (int movieId) {
+        this.movieId = movieId;
     }
 
-    public String getRtId() {
-        return rtId;
+    public int getMovieId() {
+        return movieId;
     }
 
     public String getTitle() {

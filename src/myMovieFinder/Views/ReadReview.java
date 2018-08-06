@@ -1,7 +1,9 @@
-package myMovieFinder;
+package myMovieFinder.Views;
+
+import myMovieFinder.Context;
+import myMovieFinder.ViewControllers.ReadReviewController;
 
 import java.awt.EventQueue;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
@@ -12,18 +14,30 @@ import javax.swing.JTable;
 import java.awt.Font;
 
 public class ReadReview {
-
+	private Context context;
 	private JFrame frame;
 	private JTable table;
+	private String title;
+	private URL movieImageUrl;
+	private ReadReviewController controller;
+
+	public void setMovieImageUrl(URL movieImageUrl) {
+		this.movieImageUrl = movieImageUrl;
+	}
+
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
 	/**
 	 * Launch the application.
 	 */
-	public static void run(String[] args) {
+	public static void run(Context context) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ReadReview window = new ReadReview();
+					ReadReview window = new ReadReview(context);
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -35,38 +49,26 @@ public class ReadReview {
 	/**
 	 * Create the application.
 	 */
-	public ReadReview() {
-		initialize();
-	}
+	public ReadReview(Context context) {
+		this.context = context;
+		controller = new ReadReviewController(context, this);
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 908, 616);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		
-		//show image from rotten tomatoes
-		URL imgPath=null;   
-		try {
-			imgPath = new URL("http://content7.flixster.com/movie/10/93/63/10936393_det.jpg"); //remove example and pull actual path with SQL 
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		ImageIcon img = new ImageIcon(imgPath);
-		JLabel lblMovieImage = new JLabel("");
-		lblMovieImage.setIcon(img);
-		lblMovieImage.setBounds(29, 11, 180, 256);
-		frame.getContentPane().add(lblMovieImage);
+
+		ImageIcon movieImage = new ImageIcon(movieImageUrl);
+		JLabel movieImageLabel = new JLabel("");
+		movieImageLabel.setIcon(movieImage);
+		movieImageLabel.setBounds(29, 11, 180, 256);
+		frame.getContentPane().add(movieImageLabel);
 		
 		JTextArea textArea = new JTextArea();
 		textArea.setBounds(274, 42, 426, 405);
 		frame.getContentPane().add(textArea);
 		
-		JLabel lblReviewOfBy = new JLabel("Review of          by");
+		JLabel lblReviewOfBy = new JLabel(title);
 		lblReviewOfBy.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lblReviewOfBy.setBounds(274, 11, 180, 32);
 		frame.getContentPane().add(lblReviewOfBy);

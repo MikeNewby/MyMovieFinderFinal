@@ -1,4 +1,9 @@
-package myMovieFinder;
+package myMovieFinder.ViewControllers;
+
+import myMovieFinder.Views.AddReview;
+import myMovieFinder.Context;
+import myMovieFinder.Views.FindMovies;
+import myMovieFinder.Query;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -24,7 +29,7 @@ public class AddReviewController implements ActionListener, ChangeListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand() == "Rate") {
-            Query.rateMovie(context.userId, context.movie.getRtId(), rating);
+            Query.rateMovie(context.user.getUserId(), context.movie.getMovieId(), rating);
             context.numMoviesReviewed++;
         }
 
@@ -36,7 +41,7 @@ public class AddReviewController implements ActionListener, ChangeListener {
             return;
         }
 
-        context.movie = Query.getSuggestedMovie(context.userId);
+        context.movie = Query.getSuggestedMovie(context.user.getUserId());
         AddReview.run(context);
     }
 }

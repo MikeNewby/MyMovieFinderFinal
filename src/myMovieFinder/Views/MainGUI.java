@@ -1,17 +1,23 @@
-package myMovieFinder;
+package myMovieFinder.Views;
+
+import myMovieFinder.Context;
+import myMovieFinder.ViewControllers.MainGUIController;
 
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import java.awt.Font;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 
 public class MainGUI {
 	private JFrame frame;
 	private Context context;
+	private MainGUIController controller;
+
+	public JFrame getFrame() {
+		return frame;
+	}
 
 	/**
 	 * This is the main entrance of the program (application). One program
@@ -36,36 +42,21 @@ public class MainGUI {
 	 */
 	public MainGUI(Context context) {
 		this.context = context;
-		initialize();
-	}
+		this.controller = new MainGUIController(context, this);
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 415, 208);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		JButton btnLogIn = new JButton("Log In");
-		btnLogIn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				frame.dispose();
-				LogIn.run(context);
-			}
-		});
+		btnLogIn.addActionListener(controller);
 		btnLogIn.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnLogIn.setBounds(41, 87, 138, 47);
 		frame.getContentPane().add(btnLogIn);
 		
 		JButton btnCreateUser = new JButton("Create User");
-		btnCreateUser.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				frame.dispose();
-				CreateUser.run(context);
-			}
-		});
+		btnCreateUser.addActionListener(controller);
 		btnCreateUser.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnCreateUser.setBounds(205, 87, 138, 47);
 		frame.getContentPane().add(btnCreateUser);
