@@ -19,6 +19,10 @@ public class Connect {
        private static ResultSet resultSet = null;
        
 	   public static Connection getConnection(){
+		   //no need to reconnect if we're already established
+		  if(connection != null)
+			   return connection;
+		  
 	      try {
 	            Class.forName("com.mysql.cj.jdbc.Driver");
 	            System.out.println("databaseURL: "+ databaseURL);
