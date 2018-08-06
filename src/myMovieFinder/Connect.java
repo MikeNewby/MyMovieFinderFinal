@@ -12,7 +12,7 @@ public class Connect {
 	   static final String netID ="root"; // Please enter your netId
 	   static final String hostName ="localhost"; //washington.uww.edu
 	   static final String databaseURL ="jdbc:mysql://"+hostName+"/"+databasePrefix+"?useSSL=false&serverTimezone=UTC";
-	   static final String password="Qzc10667!"; // please enter your own password
+	   static final String password="xxxxxx"; // please enter your own password
 	    
 	   private static Connection connection = null;
        private static Statement statement = null;
